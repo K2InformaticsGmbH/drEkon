@@ -1,0 +1,116 @@
+{
+	"name": "hello",
+	"type": "drakon",
+	"nodes": {
+		"1": {
+			"id": "1",
+			"type": "beginend",
+			"isLine": false,
+			"x": 300,
+			"y": 120,
+			"w": 70,
+			"h": 20,
+			"content": {
+				"txt": "hello",
+				"txt2": "",
+				"font": "bold 22px 'Liberation Sans'"
+			},
+			"role": "header"
+		},
+		"2": {
+			"id": "2",
+			"type": "end",
+			"isLine": false,
+			"x": 300,
+			"y": 350,
+			"w": 40,
+			"h": 20,
+			"content": {
+				"txt": "End",
+				"txt2": ""
+			}
+		},
+		"4": {
+			"id": "4",
+			"type": "action",
+			"isLine": false,
+			"x": 520,
+			"y": 120,
+			"w": 70,
+			"h": 40,
+			"content": {
+				"txt": "public\n\nFirstName\nLastName",
+				"txt2": ""
+			},
+			"role": "params"
+		},
+		"6": {
+			"id": "6",
+			"type": "action",
+			"isLine": false,
+			"x": 300,
+			"y": 210,
+			"w": 170,
+			"h": 20,
+			"content": {
+				"txt": "FullName = string:join([FirstName, LastName], \" \")",
+				"txt2": ""
+			}
+		},
+		"9": {
+			"id": "9",
+			"type": "action",
+			"isLine": false,
+			"x": 300,
+			"y": 270,
+			"w": 170,
+			"h": 20,
+			"content": {
+				"txt": "lists:flatten(io_lib:format(\"Hello ~s!~n\", [FullName]))",
+				"txt2": ""
+			}
+		}
+	},
+	"edges": {
+		"5": {
+			"id": "5",
+			"type": "horizontal",
+			"isLine": true,
+			"isVertical": false,
+			"head": "1",
+			"tail": "4"
+		},
+		"7": {
+			"id": "7",
+			"type": "vertical",
+			"isLine": true,
+			"isVertical": true,
+			"head": "1",
+			"tail": "6",
+			"role": "down"
+		},
+		"10": {
+			"id": "10",
+			"type": "vertical",
+			"isLine": true,
+			"isVertical": true,
+			"head": "6",
+			"tail": "9",
+			"role": "down"
+		},
+		"11": {
+			"id": "11",
+			"type": "vertical",
+			"isLine": true,
+			"isVertical": true,
+			"head": "9",
+			"tail": "2",
+			"role": "down"
+		}
+	},
+	"background": "",
+	"diaLine": "",
+	"diaLineThickness": "",
+	"font": "14px 'Liberation Sans'",
+	"version": 20180619
+}
