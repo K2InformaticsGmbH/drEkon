@@ -13,3 +13,4 @@ _*
 *.swo
 .erlang.cookie
 rebar3.crashdump
+rebar.lock
