@@ -11,8 +11,8 @@
 			"w": 70,
 			"h": 20,
 			"content": {
-				"txt": "xser",
 				"txt2": "",
+				"txt": "xser",
 				"font": "bold 22px 'Liberation Sans'"
 			},
 			"role": "header"
@@ -37,9 +37,9 @@
 			"x": 930,
 			"y": 120,
 			"w": 70,
-			"h": 40,
+			"h": 20,
 			"content": {
-				"txt": "public\n\nXSERs\nPdu",
+				"txt": "Pdu",
 				"txt2": ""
 			},
 			"role": "params"

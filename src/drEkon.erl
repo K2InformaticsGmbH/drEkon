@@ -25,6 +25,89 @@
 
 -export([load/1, generate/2, compile_module/2]).
 
+-export([load_test/1, make_graph/1, reduce_junctions/1]).
+
+load_test(JsonFile) when is_atom(JsonFile) ->
+    load_test(atom_to_list(JsonFile));
+load_test(JsonFile) ->
+    File = filename:join(["test/udh_parser/", JsonFile ++ ".json"]),
+    io:format("~s~n", [File]),
+    {ok, JSONBin} = file:read_file(File),
+    jsx:decode(JSONBin, [return_maps]).
+
+make_graph(#{<<"nodes">> := Nodes, <<"edges">> := Edges}) ->
+    maps:fold(
+        fun(_, #{<<"head">> := HBin, <<"tail">> := TBin}, Graph) ->
+            H = binary_to_integer(HBin),
+            T = binary_to_integer(TBin),
+            {Head, Tail, NewGraph} =
+                case maps:with([H, T], Graph) of
+                    #{H := Hd, T := Tl} -> {Hd, Tl, Graph};
+                    #{H := Hd} ->
+                        Tl = cleanup_node(maps:get(TBin, Nodes)),
+                        {Hd, Tl, Graph#{T => Tl}};
+                    #{T := Tl} ->
+                        Hd = cleanup_node(maps:get(HBin, Nodes)),
+                        {Hd, Tl, Graph#{H => Hd}};
+                    _ ->
+                        Hd = cleanup_node(maps:get(HBin, Nodes)),
+                        Tl = cleanup_node(maps:get(TBin, Nodes)),
+                        {Hd, Tl, Graph#{H => Hd, T => Tl}}
+                end,
+            NewGraph1 =
+                case Head of
+                    #{<<"neighbours">> := Neighbours} ->
+                        NewGraph#{H => Head#{<<"neighbours">> => [T | Neighbours]}};
+                    Head ->
+                        NewGraph#{H => Head#{<<"neighbours">> => [T]}}
+                end,
+            case Tail of
+                #{<<"neighbours">> := Neighbours1} ->
+                    NewGraph1#{T => Tail#{<<"neighbours">> => [H | Neighbours1]}};
+                Tail ->
+                    NewGraph1#{T => Tail#{<<"neighbours">> => [H]}}
+            end
+        end, #{}, Edges
+    ).
+
+reduce_junctions(Graph) ->
+    case
+        maps:filter(
+            fun(_, #{<<"type">> := <<"junction">>}) -> true;
+               (_, _) -> false
+            end,
+        Graph)
+    of
+        Empty when map_size(Empty) =:= 0 -> Graph;
+        Junctions ->
+            maps:fold(fun reduce_junctions/3, Graph, Junctions)
+    end.
+
+reduce_junctions(JunctionId, _, Graph) ->
+    #{JunctionId := #{<<"neighbours">> := JunctionNeighbours}} = Graph,
+    lists:foldl(
+        reduce_junctions(JunctionId, JunctionNeighbours),
+        maps:without([JunctionId], Graph), JunctionNeighbours
+    ).
+
+reduce_junctions(JunctionId, JunctionNeighbours) ->
+    fun(Id, Graph) ->
+        #{Id := #{<<"neighbours">> := Neighbours} = Node} = Graph,
+        Graph#{
+            Id => Node#{
+                <<"neighbours">> =>
+                    lists:usort((Neighbours ++ JunctionNeighbours) -- [JunctionId, Id])
+            }
+        }
+    end.
+
+cleanup_node(#{<<"content">> := #{<<"txt">> := Txt,
+                                  <<"txt2">> := Txt2}} = Node) ->
+    maps:without([<<"w">>, <<"h">>, <<"x">>, <<"y">>, <<"id">>, <<"isLine">>],
+                 Node#{<<"content">> => [Txt, Txt2]});
+cleanup_node(Node) ->
+    maps:without([<<"w">>, <<"h">>, <<"x">>, <<"y">>, <<"id">>, <<"isLine">>], Node).
+
 -record(obj, {id, type, name, subtype, content, role, head, tail}).
 
 load(Json) ->
