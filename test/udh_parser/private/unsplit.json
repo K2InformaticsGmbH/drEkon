@@ -37,9 +37,9 @@
 			"x": 930,
 			"y": 120,
 			"w": 70,
-			"h": 40,
+			"h": 30,
 			"content": {
-				"txt": "public\n\nPdu\nSM",
+				"txt": "Pdu\nSM",
 				"txt2": ""
 			},
 			"role": "params"

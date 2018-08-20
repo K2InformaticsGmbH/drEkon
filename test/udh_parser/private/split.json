@@ -11,8 +11,8 @@
 			"w": 70,
 			"h": 20,
 			"content": {
-				"txt": "split",
 				"txt2": "",
+				"txt": "split",
 				"font": "bold 22px 'Liberation Sans'"
 			},
 			"role": "header"
@@ -37,9 +37,9 @@
 			"x": 520,
 			"y": 120,
 			"w": 70,
-			"h": 40,
+			"h": 20,
 			"content": {
-				"txt": "public\n\nBin",
+				"txt": "Bin",
 				"txt2": ""
 			},
 			"role": "params"
