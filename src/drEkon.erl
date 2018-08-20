@@ -25,15 +25,17 @@
 
 -export([load/1, generate/2, compile_module/2]).
 
--export([load_test/1, make_graph/1, reduce_junctions/1]).
+-export([make_graph/1, reduce_junctions/1]).
 
-load_test(JsonFile) when is_atom(JsonFile) ->
-    load_test(atom_to_list(JsonFile));
-load_test(JsonFile) ->
-    File = filename:join(["test/udh_parser/", JsonFile ++ ".json"]),
-    io:format("~s~n", [File]),
-    {ok, JSONBin} = file:read_file(File),
-    jsx:decode(JSONBin, [return_maps]).
+-ifdef(CONSOLE).
+f().
+{ok, JB} = file:read_file("test/udh_parser/public/pack.json").
+J = jsx:decode(JB, [return_maps]).
+G = drEkon:make_graph(J).
+RG = drEkon:reduce_junctions(G).
+RGB = jsx:encode(RG).
+ok = file:write_file("test/udh_parser/public/pack_rg.json", RGB).
+-endif.
 
 make_graph(#{<<"nodes">> := Nodes, <<"edges">> := Edges}) ->
     maps:fold(

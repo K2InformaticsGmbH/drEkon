@@ -26,7 +26,8 @@
   {registered, []},
   {applications,
    [kernel,
-    stdlib
+    stdlib,
+    jsx
    ]},
   {env,[]},
   {modules, [drEkon]},
