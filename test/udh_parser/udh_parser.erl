@@ -47,6 +47,10 @@ pack(Pdu) ->
         #{<<"udh">> := _, <<"ot">> := _} = Pdu ->
             % item 176
             pack(Pdu#{<<"xser">> => []})
+        ;
+        Pdu ->
+            % item 221
+            Pdu
     end
 .
 
